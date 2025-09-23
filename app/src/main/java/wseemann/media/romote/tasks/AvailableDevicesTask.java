@@ -7,7 +7,6 @@ import com.wseemann.ecp.api.DeviceRequests;
 import com.wseemann.ecp.api.QueryRequests;
 import com.wseemann.ecp.api.RokuDevice;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -71,7 +70,7 @@ public class AvailableDevicesTask implements Callable {
                     availableDevices.add(device);
                 }
             }
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -101,7 +100,7 @@ public class AvailableDevicesTask implements Callable {
                         Device device = Device.Companion.fromDevice(QueryRequests.queryDeviceInfo("http://" + clientScanResult.getIpAddr() + ":8060"));
                         device.setHost("http://" + clientScanResult.getIpAddr() + ":8060");
                         availableDevices.add(device);
-                    } catch (IOException ex) {
+                    } catch (Exception ex) {
                         Log.e(TAG, "Invalid device: " + ex.getMessage());
                     }
                 }

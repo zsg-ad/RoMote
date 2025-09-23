@@ -3,7 +3,6 @@ package wseemann.media.romote.tasks;
 import com.wseemann.ecp.api.QueryRequests;
 import com.wseemann.ecp.model.Channel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -24,7 +23,7 @@ public class ChannelTask implements Callable {
 
         try {
             channels = QueryRequests.queryAppsRequest(commandHelper.getDeviceURL());
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
             channels = new ArrayList<>();
         }

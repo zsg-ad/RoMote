@@ -36,7 +36,6 @@ import com.wseemann.ecp.api.ResponseCallback;
 import com.wseemann.ecp.core.KeyPressKeyValues;
 import com.wseemann.ecp.request.KeyPressRequest;
 import com.wseemann.ecp.request.QueryDeviceInfoRequest;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import javax.inject.Inject;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -249,7 +248,7 @@ public class RemoteFragment extends Fragment {
         try {
             KeyPressRequest keyPressRequest = new KeyPressRequest(url, keypressKeyValue.getValue());
             performRequest(keyPressRequest);
-        } catch (UnsupportedEncodingException ex) {
+        } catch (Exception ex) {
             Timber.e(ex, "Failed to execute command");
         }
     }
@@ -311,8 +310,8 @@ public class RemoteFragment extends Fragment {
         try {
             Device device = preferenceUtils.getConnectedDevice();
 
-            if (device.getIsTv() != null) {
-                boolean isTv = Boolean.valueOf(device.getIsTv());
+            if (device.getTv() != null) {
+                boolean isTv = Boolean.valueOf(device.getTv());
                 getView().findViewById(R.id.volume_controls).setVisibility(isTv ? View.VISIBLE : View.GONE);
             }
 

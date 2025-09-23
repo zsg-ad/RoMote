@@ -39,8 +39,8 @@ class Device : com.wseemann.ecp.model.Device() {
             device.notificationsFirstUse = jakuDevice.notificationsFirstUse
             device.supportsPrivateListening = jakuDevice.supportsPrivateListening
             device.headphonesConnected = jakuDevice.headphonesConnected
-            device.isTv = jakuDevice.isTv
-            device.isStick = jakuDevice.isStick
+            device.tv = jakuDevice.tv
+            device.stick = jakuDevice.stick
 
             return device
         }

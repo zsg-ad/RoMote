@@ -96,8 +96,8 @@ public class DBUtils {
         values.put(DeviceDatabase.NOTIFICATIONS_FIRST_USE, device.getNotificationsFirstUse());
         values.put(DeviceDatabase.SUPPORTS_PRIVATE_LISTENING, device.getSupportsPrivateListening());
         values.put(DeviceDatabase.HEADPHONES_CONNECTED, device.getHeadphonesConnected());
-        values.put(DeviceDatabase.IS_TV, device.getIsTv());
-        values.put(DeviceDatabase.IS_STICK, device.getIsStick());
+        values.put(DeviceDatabase.IS_TV, device.getTv());
+        values.put(DeviceDatabase.IS_STICK, device.getStick());
         values.put(DeviceDatabase.CUSTOM_USER_DEVICE_NAME, device.getCustomUserDeviceName());
 
         id = db.insert(DeviceDatabase.DEVICES_TABLE_NAME, null, values);
@@ -116,8 +116,8 @@ public class DBUtils {
 
         ContentValues values = new ContentValues();
         values.put(DeviceDatabase.HOST, device.getHost());
-        values.put(DeviceDatabase.IS_TV, device.getIsTv());
-        values.put(DeviceDatabase.IS_STICK, device.getIsStick());
+        values.put(DeviceDatabase.IS_TV, device.getTv());
+        values.put(DeviceDatabase.IS_STICK, device.getStick());
         if (device.getCustomUserDeviceName() != null) {
             values.put(DeviceDatabase.CUSTOM_USER_DEVICE_NAME, device.getCustomUserDeviceName());
         }
@@ -211,8 +211,8 @@ public class DBUtils {
         device.setNotificationsFirstUse(cursor.getString(cursor.getColumnIndex(DeviceDatabase.NOTIFICATIONS_FIRST_USE)));
         device.setSupportsPrivateListening(cursor.getString(cursor.getColumnIndex(DeviceDatabase.SUPPORTS_PRIVATE_LISTENING)));
         device.setHeadphonesConnected(cursor.getString(cursor.getColumnIndex(DeviceDatabase.HEADPHONES_CONNECTED)));
-        device.setIsTv(cursor.getString(cursor.getColumnIndex(DeviceDatabase.IS_TV)));
-        device.setIsStick(cursor.getString(cursor.getColumnIndex(DeviceDatabase.IS_STICK)));
+        device.setTv(cursor.getString(cursor.getColumnIndex(DeviceDatabase.IS_TV)));
+        device.setStick(cursor.getString(cursor.getColumnIndex(DeviceDatabase.IS_STICK)));
         device.setCustomUserDeviceName(cursor.getString(cursor.getColumnIndex(DeviceDatabase.CUSTOM_USER_DEVICE_NAME)));
 
         return device;
