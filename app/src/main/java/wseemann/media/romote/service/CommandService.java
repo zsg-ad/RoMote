@@ -10,8 +10,6 @@ import com.wseemann.ecp.api.ResponseCallback;
 import com.wseemann.ecp.core.KeyPressKeyValues;
 import com.wseemann.ecp.request.KeyPressRequest;
 
-import java.io.UnsupportedEncodingException;
-
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -63,7 +61,7 @@ public class CommandService extends IntentService {
 
                 }
             });
-        } catch (UnsupportedEncodingException ex) {
+        } catch (Exception ex) {
             Timber.e(ex, "Failed to execute command");
         }
     }
