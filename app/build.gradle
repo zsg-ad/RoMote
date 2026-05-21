@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 apply plugin: 'dagger.hilt.android.plugin'
 
@@ -28,17 +27,14 @@ android {
         getByName("release") {
             signingConfig = signingConfigs.getByName("releaseConfig")
             minifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-    }
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += ['META-INF/DEPENDENCIES']
         }
@@ -60,7 +56,7 @@ dependencies {
     implementation(libs.android.material)
     implementation(libs.glide)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.jdom)
     implementation(libs.roku.ecp.wrapper.kotlin)
     implementation(libs.rxjava.android)
