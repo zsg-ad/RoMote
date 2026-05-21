@@ -281,30 +281,30 @@ public class MainFragment extends ListFragment {
             public boolean onMenuItemClick(MenuItem item) {
                 Device device = (Device) v.getTag();
 
-                switch (item.getItemId()) {
-                    case R.id.action_rename:
-                        EditDeviceNameDialog fragment = EditDeviceNameDialog.getInstance(device.getCustomUserDeviceName(), device.getSerialNumber());
-                        fragment.setListener(() -> {
-                            mAvailableDeviceAdapter.clear();
-                            mAdapter.notifyDataSetChanged();
-                            loadPairedDevices();
-                            BroadcastUtils.Companion.sendUpdateDeviceBroadcast(requireContext());
-                        });
-                        fragment.show(MainFragment.this.getFragmentManager(), EditDeviceNameDialog.class.getName());
-                        return true;
-                    case R.id.action_info:
-                        Intent intent = new Intent(getActivity(), DeviceInfoActivity.class);
-                        intent.putExtra("serial_number", device.getSerialNumber());
-                        intent.putExtra("host", device.getHost());
-                        startActivity(intent);
-                        return true;
-                    case R.id.action_unpair:
-                        preferenceUtils.setConnectedDevice("");
-                        DBUtils.removeDevice(getActivity(), device.getSerialNumber());
-                        refreshList(false);
-                        return true;
-                    default:
-                        return false;
+                int itemId = item.getItemId();
+                if (itemId == R.id.action_rename) {
+                    EditDeviceNameDialog fragment = EditDeviceNameDialog.getInstance(device.getCustomUserDeviceName(), device.getSerialNumber());
+                    fragment.setListener(() -> {
+                        mAvailableDeviceAdapter.clear();
+                        mAdapter.notifyDataSetChanged();
+                        loadPairedDevices();
+                        BroadcastUtils.Companion.sendUpdateDeviceBroadcast(requireContext());
+                    });
+                    fragment.show(MainFragment.this.getFragmentManager(), EditDeviceNameDialog.class.getName());
+                    return true;
+                } else if (itemId == R.id.action_info) {
+                    Intent intent = new Intent(getActivity(), DeviceInfoActivity.class);
+                    intent.putExtra("serial_number", device.getSerialNumber());
+                    intent.putExtra("host", device.getHost());
+                    startActivity(intent);
+                    return true;
+                } else if (itemId == R.id.action_unpair) {
+                    preferenceUtils.setConnectedDevice("");
+                    DBUtils.removeDevice(getActivity(), device.getSerialNumber());
+                    refreshList(false);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         });

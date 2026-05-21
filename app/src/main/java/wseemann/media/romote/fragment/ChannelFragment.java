@@ -247,20 +247,19 @@ public class ChannelFragment extends Fragment {
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_share:
-                        Channel channel = (Channel) v.getTag();
+                if (item.getItemId() == R.id.action_share) {
+                    Channel channel = (Channel) v.getTag();
 
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_SEND);
-                        intent.putExtra(Intent.EXTRA_TEXT, "Install this Roku channel (" +
-                                channel.getTitle() + "):\n\n" +
-                                "http://romote/" + channel.getId() + "\n\n" + "Sent using RoMote.");
-                        intent.setType("text/plain");
-                        startActivity(intent);
-                        return true;
-                    default:
-                        return false;
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_TEXT, "Install this Roku channel (" +
+                            channel.getTitle() + "):\n\n" +
+                            "http://romote/" + channel.getId() + "\n\n" + "Sent using RoMote.");
+                    intent.setType("text/plain");
+                    startActivity(intent);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         });
