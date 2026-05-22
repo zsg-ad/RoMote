@@ -30,9 +30,6 @@ import wseemann.media.romote.utils.PreferenceUtils;
 
 import javax.inject.Inject;
 
-/**
- * Created by wseemann on 6/26/16.
- */
 @AndroidEntryPoint
 public class ManualConnectionFragment extends Fragment {
 
@@ -53,10 +50,10 @@ public class ManualConnectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manual_connection, container, false);
 
-        mIpAddressText = (EditText) view.findViewById(R.id.ip_address_text);
-        mConnectButton = (Button) view.findViewById(R.id.connect_button);
-        mProgressLayout = (LinearLayout) view.findViewById(R.id.progress_layout);
-        mErrorText = (TextView) view.findViewById(R.id.error_text);
+        mIpAddressText = view.findViewById(R.id.ip_address_text);
+        mConnectButton = view.findViewById(R.id.connect_button);
+        mProgressLayout = view.findViewById(R.id.progress_layout);
+        mErrorText = view.findViewById(R.id.error_text);
 
         return view;
     }
@@ -65,30 +62,25 @@ public class ManualConnectionFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getActivity().setResult(Activity.RESULT_CANCELED);
+        requireActivity().setResult(Activity.RESULT_CANCELED);
 
-        mConnectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mConnectButton.setOnClickListener(v -> {
 
-                String ipAddress = mIpAddressText.getText().toString();
-                mHost = "http://" + ipAddress + ":8060";
+            String ipAddress = mIpAddressText.getText().toString();
+            mHost = "http://" + ipAddress + ":8060";
 
-                mErrorText.setVisibility(View.GONE);
-                mProgressLayout.setVisibility(View.VISIBLE);
-                sendCommand(mHost);
-            }
+            mErrorText.setVisibility(View.GONE);
+            mProgressLayout.setVisibility(View.VISIBLE);
+            sendCommand(mHost);
         });
 
-        ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+        ((InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
                 .showSoftInput(mIpAddressText, InputMethodManager.SHOW_FORCED);
     }
 
     private void sendCommand(String command) {
-        String url = command;
-
-        QueryDeviceInfoRequest queryActiveAppRequest = new QueryDeviceInfoRequest(url);
-        queryActiveAppRequest.sendAsync(new ResponseCallbackWrapper<>(new ResponseCallback<com.wseemann.ecp.model.Device>() {
+        QueryDeviceInfoRequest queryActiveAppRequest = new QueryDeviceInfoRequest(command);
+        queryActiveAppRequest.sendAsync(new ResponseCallbackWrapper<>(new ResponseCallback<>() {
             @Override
             public void onSuccess(@Nullable com.wseemann.ecp.model.Device device) {
                 mProgressLayout.setVisibility(View.GONE);
@@ -114,7 +106,7 @@ public class ManualConnectionFragment extends Fragment {
         editor.commit();
 
         Intent intent = new Intent();
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
+        requireActivity().setResult(Activity.RESULT_OK, intent);
+        requireActivity().finish();
     }
 }

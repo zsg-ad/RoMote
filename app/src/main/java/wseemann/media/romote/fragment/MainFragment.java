@@ -16,12 +16,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.ListFragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -48,7 +48,6 @@ import wseemann.media.romote.model.Device;
 import wseemann.media.romote.tasks.AvailableDevicesTask;
 import wseemann.media.romote.tasks.UpdatePairedDeviceTask;
 import wseemann.media.romote.utils.BroadcastUtils;
-import wseemann.media.romote.utils.Constants;
 import wseemann.media.romote.utils.DBUtils;
 import wseemann.media.romote.utils.PreferenceUtils;
 import wseemann.media.romote.widget.RokuAppWidgetProvider;
@@ -77,10 +76,10 @@ public class MainFragment extends ListFragment {
 
     private OnDeviceSelectedListener mListener;
 
-    private CompositeDisposable bin = new CompositeDisposable();
+    private final CompositeDisposable bin = new CompositeDisposable();
 
     @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler() {
+    private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             showMenu((View) msg.obj);
@@ -88,7 +87,7 @@ public class MainFragment extends ListFragment {
     };
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         try {
@@ -117,14 +116,11 @@ public class MainFragment extends ListFragment {
 
         mSwiperefresh = view.findViewById(R.id.swiperefresh);
         mSwiperefresh.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        // This method performs the actual data-refresh operation.
-                        // The method calls setRefreshing(false) when it's finished.
-                        setLoadingText(true);
-                        loadAvailableDevices();
-                    }
+                () -> {
+                    // This method performs the actual data-refresh operation.
+                    // The method calls setRefreshing(false) when it's finished.
+                    setLoadingText(true);
+                    loadAvailableDevices();
                 }
         );
 
@@ -152,12 +148,12 @@ public class MainFragment extends ListFragment {
             BroadcastUtils.Companion.sendUpdateDeviceBroadcast(requireContext());
 
             AppWidgetManager widgetManager = AppWidgetManager.getInstance(getActivity());
-            ComponentName widgetComponent = new ComponentName(getActivity(), RokuAppWidgetProvider.class);
+            ComponentName widgetComponent = new ComponentName(requireActivity(), RokuAppWidgetProvider.class);
             int[] widgetIds = widgetManager.getAppWidgetIds(widgetComponent);
             Intent update = new Intent();
             update.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, widgetIds);
             update.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-            getActivity().sendBroadcast(update);
+            requireActivity().sendBroadcast(update);
 
             if (mListener != null) {
                 mListener.onDeviceSelected();
@@ -169,15 +165,9 @@ public class MainFragment extends ListFragment {
             loadPairedDevices();
         });
 
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //ManualConnectionDialog fragment = ManualConnectionDialog.getInstance(getActivity());
-                //fragment.show(MainFragment.this.getFragmentManager(), ManualConnectionDialog.class.getName());
-
-                Intent intent = new Intent(MainFragment.this.getActivity(), ManualConnectionActivity.class);
-                startActivityForResult(intent, 0);
-            }
+        mFab.setOnClickListener(view -> {
+            Intent intent = new Intent(MainFragment.this.getActivity(), ManualConnectionActivity.class);
+            startActivityForResult(intent, 0);
         });
 
         mAdapter = new SeparatedListAdapter(getActivity());
@@ -205,7 +195,7 @@ public class MainFragment extends ListFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
     }
 
@@ -216,7 +206,6 @@ public class MainFragment extends ListFragment {
 
         if (id == R.id.action_refresh) {
             setLoadingText(true);
-            //mSwiperefresh.setRefreshing(true);
             loadAvailableDevices();
             return true;
         }
@@ -250,7 +239,7 @@ public class MainFragment extends ListFragment {
         mAvailableDeviceAdapter.clear();
         mAdapter.notifyDataSetChanged();
 
-        if (devices.size() == 0) {
+        if (devices.isEmpty()) {
             return;
         }
 
@@ -273,39 +262,36 @@ public class MainFragment extends ListFragment {
     }
 
     private void showMenu(final View v) {
-        PopupMenu popup = new PopupMenu(getActivity(), v);
+        PopupMenu popup = new PopupMenu(requireActivity(), v);
 
         // This activity implements OnMenuItemClickListener
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Device device = (Device) v.getTag();
+        popup.setOnMenuItemClickListener(item -> {
+            Device device = (Device) v.getTag();
 
-                int itemId = item.getItemId();
-                if (itemId == R.id.action_rename) {
-                    EditDeviceNameDialog fragment = EditDeviceNameDialog.getInstance(device.getCustomUserDeviceName(), device.getSerialNumber());
-                    fragment.setListener(() -> {
-                        mAvailableDeviceAdapter.clear();
-                        mAdapter.notifyDataSetChanged();
-                        loadPairedDevices();
-                        BroadcastUtils.Companion.sendUpdateDeviceBroadcast(requireContext());
-                    });
-                    fragment.show(MainFragment.this.getFragmentManager(), EditDeviceNameDialog.class.getName());
-                    return true;
-                } else if (itemId == R.id.action_info) {
-                    Intent intent = new Intent(getActivity(), DeviceInfoActivity.class);
-                    intent.putExtra("serial_number", device.getSerialNumber());
-                    intent.putExtra("host", device.getHost());
-                    startActivity(intent);
-                    return true;
-                } else if (itemId == R.id.action_unpair) {
-                    preferenceUtils.setConnectedDevice("");
-                    DBUtils.removeDevice(getActivity(), device.getSerialNumber());
-                    refreshList(false);
-                    return true;
-                } else {
-                    return false;
-                }
+            int itemId = item.getItemId();
+            if (itemId == R.id.action_rename) {
+                EditDeviceNameDialog fragment = EditDeviceNameDialog.getInstance(device.getCustomUserDeviceName(), device.getSerialNumber());
+                fragment.setListener(() -> {
+                    mAvailableDeviceAdapter.clear();
+                    mAdapter.notifyDataSetChanged();
+                    loadPairedDevices();
+                    BroadcastUtils.Companion.sendUpdateDeviceBroadcast(requireContext());
+                });
+                fragment.show(MainFragment.this.getFragmentManager(), EditDeviceNameDialog.class.getName());
+                return true;
+            } else if (itemId == R.id.action_info) {
+                Intent intent = new Intent(getActivity(), DeviceInfoActivity.class);
+                intent.putExtra("serial_number", device.getSerialNumber());
+                intent.putExtra("host", device.getHost());
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.action_unpair) {
+                preferenceUtils.setConnectedDevice("");
+                DBUtils.removeDevice(getActivity(), device.getSerialNumber());
+                refreshList(false);
+                return true;
+            } else {
+                return false;
             }
         });
         popup.inflate(R.menu.device_menu);
@@ -345,7 +331,7 @@ public class MainFragment extends ListFragment {
         mPairedDeviceAdapter.clear();
         mAdapter.notifyDataSetChanged();
 
-        if (devices.size() == 0) {
+        if (devices.isEmpty()) {
             return;
         }
 

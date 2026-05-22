@@ -3,6 +3,7 @@ about-libraries-plugin = "12.2.1"
 androidx-appcompat = "1.7.1"
 androidx-constraintlayout = "2.2.1"
 androidx-legacy = "1.0.0"
+androidx-lifecycle = "2.8.7"
 androidx-preference = "1.2.1"
 androidx-splashscreen = "1.0.1"
 android-material = "1.12.0"
@@ -20,6 +21,8 @@ about-libraries-plugin = { module = "com.mikepenz:aboutlibraries", version.ref =
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-legacy = { module = "androidx.legacy:legacy-support-v4", version.ref = "androidx-legacy" }
+androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-preference = { module = "androidx.preference:preference", version.ref = "androidx-preference" }
 androidx-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-splashscreen" }
 android-material = { module = "com.google.android.material:material", version.ref = "android-material" }
